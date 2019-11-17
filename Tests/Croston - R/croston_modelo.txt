@@ -1,0 +1,23 @@
+Simple exponential smoothing 
+
+Call:
+ ses(y = y, h = h, initial = "simple", alpha = alpha, PI = FALSE) 
+
+  Smoothing parameters:
+    alpha = 0.1 
+
+  Initial states:
+    l = 2 
+
+  sigma:  3.3734Simple exponential smoothing 
+
+Call:
+ ses(y = y, h = h, initial = "simple", alpha = alpha, PI = FALSE) 
+
+  Smoothing parameters:
+    alpha = 0.1 
+
+  Initial states:
+    l = 2 
+
+  sigma:  3.3734

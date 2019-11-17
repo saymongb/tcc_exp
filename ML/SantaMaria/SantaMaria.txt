@@ -1,0 +1,123 @@
+Teste da unidade: Santa Maria
+Nomeclaturas: M(Média), D(Desvio Padrão), N_O(Número de Neurônio da camada Oculta) 
+
+
+
+Estudo 1
+activation_function: RELU/LINEAR
+stopping_criterion: iterations
+max_iterations: 200
+batch: 32
+optimizer: adam
+
+Tabela da média dos 20 treinamentos:
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+1       14       1734.5247            456.4822             41.3409              5.0449               4489.266             671.0569             66.8401              4.6542               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+2       01       6735.4716            10815.6933           70.317               42.32                13964.7104           20501.235            103.4281             57.1606              
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+3       10       1931.5208            727.6611             43.3485              7.2409               5008.47              1872.3631            69.7793              11.8032              
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+4       14       1620.2062            311.331              40.0873              3.6353               4078.6425            814.0774             63.5894              5.9186               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+5       07       2146.7408            1167.9854            45.0442              10.8518              4421.6056            2503.6823            64.0699              17.7949              
+
+
+Estudo 2
+activation_function: RELU/LINEAR
+stopping_criterion: iterations
+max_iterations: 400
+batch: 32
+optimizer: adam
+
+Tabela da média dos 20 treinamentos:
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+1       07       1513.0982            123.9914             38.8672              1.5617               4171.456             93.6463              64.5827              0.7283               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+2       10       1477.7409            85.4311              38.4263              1.0775               3695.7618            174.0712             60.7767              1.3961               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+3       01       2644.1068            874.7275             50.7014              8.5717               6285.2692            1728.4379            78.5056              11.052               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+4       09       1411.5425            228.4005             37.4562              2.9285               3659.0359            564.3427             60.3106              4.6547               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+5       15       1061.8814            237.729              32.3812              3.6521               2518.1645            781.763              49.5815              7.7357               
+
+
+Estudo 3
+activation_function: RELU/LINEAR
+stopping_criterion: Early_stopping
+max_iterations: 400
+batch: 32
+optimizer: adam
+
+Tabela da média dos 20 treinamentos:
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+1       06       2066.9457            1090.634             44.1712              10.7634              5291.8704            1994.0392            71.655               12.547               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+2       13       1437.1838            12.9461              37.9098              0.1709               3654.5549            77.1212              60.4496              0.6371               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+3       07       1606.7379            489.2404             39.7692              5.0151               4296.7557            955.711              65.2145              6.6202               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+4       06       1551.3466            363.9885             39.1513              4.3039               4205.7654            976.0324             64.4895              6.8463               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+5       08       1349.5824            431.1951             36.3255              5.4811               3295.9325            1308.6488            56.3842              10.8054              
+
+
+Estudo 4
+activation_function: SIGMOID/LINEAR
+stopping_criterion: iterations
+max_iterations: 200
+batch: 32
+optimizer: adam
+
+Tabela da média dos 20 treinamentos:
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+1       12       3183.9832            77.731               56.4226              0.6905               7144.0505            107.2716             84.5201              0.6355               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+2       13       3176.6793            75.2965              56.3581              0.6675               7078.8543            107.4779             84.1335              0.6384               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+3       11       3313.5797            90.2832              57.5584              0.7829               7204.2721            117.6605             84.8752              0.6933               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+4       10       3470.7986            114.6486             58.9054              0.9769               7192.4973            134.1404             84.8049              0.7929               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+5       13       3603.1174            110.5057             60.0188              0.9257               7136.2283            142.6628             84.472               0.8469               
+
+
+Estudo 5
+activation_function: SIGMOID/LINEAR
+stopping_criterion: iterations
+max_iterations: 400
+batch: 32
+optimizer: adam
+
+Tabela da média dos 20 treinamentos:
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+1       15       2802.3181            138.6808             52.9208              1.3073               6614.3381            196.6181             81.3196              1.2074               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+2       15       2822.4484            69.7147              53.1227              0.6536               6561.3141            104.8776             80.9994              0.6458               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+3       09       3168.3168            94.3135              56.2816              0.8379               7015.3599            131.3381             83.7541              0.7838               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+4       11       3342.4779            81.2384              57.8099              0.7015               7035.2762            102.977              83.8743              0.6137               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+5       13       3412.5103            120.4964             58.4077              1.0273               6904.0582            147.1823             83.086               0.8844               
+
+
+Estudo 6
+activation_function: SIGMOID/LINEAR
+stopping_criterion: Early_stopping
+max_iterations: 400
+batch: 32
+optimizer: adam
+
+Tabela da média dos 20 treinamentos:
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+1       11       2965.9604            130.1655             54.4473              1.2041               6844.7733            183.3564             82.7257              1.1132               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+2       13       2894.633             110.6142             53.792               1.0276               6663.117             160.1942             81.622               0.9818               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+3       13       3042.2698            98.8772              55.1496              0.8895               6839.9858            152.3933             82.6991              0.9191               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+4       12       3217.018             89.8427              56.7132              0.7936               6884.1362            122.6024             82.9674              0.7401               
+ATRASO  N_O      M(trainScoreMSE)     D(trainScoreMSE)     M(trainScoreRMSE)    D(trainScoreRMSE)    M(testScoreMSE)      D(testScoreMSE)      M(testScoreRMSE)     D(testScoreRMSE)       
+5       15       3425.3698            109.5406             58.5192              0.9339               6903.262             139.1417             83.0817              0.8358               

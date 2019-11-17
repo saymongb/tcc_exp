@@ -1,0 +1,8 @@
+Teste da unidade: São Paulo
+MLP com atraso 3
+Tabela da média dos 20 treinamentos
+Métrica         Média    Desvio_Padrao
+trainScoreMSE: 53214.6022 10881.2168
+trainScoreRMSE: 229.6548 21.7553
+testScoreMSE: 20988.7182 3030.2607
+testScoreRMSE: 144.4843 10.6303
