@@ -315,7 +315,6 @@ class Utils:
         newDF = dataFrame[dataFrame['Series']==seriesName]
        
         # To initialize date
-        
         startYear = str(newDF['Starting Year'].values[0])
         month = str(newDF['Starting Month'].values[0])
         if startYear == '0':

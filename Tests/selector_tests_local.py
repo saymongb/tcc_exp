@@ -25,7 +25,7 @@ import modelSeletor as ms
 import utils.util as ut
 import socket
 
-print(os.getcwd()[0:-5])
+'''print(os.getcwd()[0:-5])
 # Data definition, global scope
 file = u'Demanda corrediça.xlsx'
 path = '..Dataset/'
@@ -100,4 +100,4 @@ for unidade in filiais:
     plt.legend(['Real','Test', modeloTemp])
     plt.gcf().autofmt_xdate()
     plt.savefig(imagePath+unidade+'- corredica.png',dpi = 300)
-    plt.close()
+    plt.close()'''

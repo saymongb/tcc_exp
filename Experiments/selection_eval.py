@@ -8,7 +8,7 @@ Summary:    Code to run model selection experiment and save results.
 Note:       a) Save results in a ".xlsx" file.
             b) Tests with all models in pool.
 
-Fix: Combination fit error.
+Fix: 
 Status: Validating         
 Next:
        
@@ -53,25 +53,25 @@ data = pd.read_excel(path+dataFile,None)
 if not m3:
     
     # Specific corrediça spreadsheet operations
-    outputFileName = 'corredica'
+    outputFileName = 'selection_corredica'
     sheet_names = ['2017','2018','2019'] # For corrediça spreadsheet
     filiais = pd.read_excel(path+dataFile,'2017')
     filiais = filiais['Unidade'].str.replace("  +","") #remove space
     names = filiais.unique()
     names.sort()
-    #names = ['Porto Velho','São Paulo'] # coment this line for executions
+    names = ['Porto Velho','São Paulo'] # coment this line for executions
     
 else:
     
     # Specific to M3-Competition monthly data
     # Extract series conform to https://doi.org/10.1016/j.jbusres.2015.03.028
-    outputFileName = 'M3'
+    outputFileName = 'selection_M3'
     frequency = ['M']
     data = data.pop('M3Month')
-    data = data[data['N']>=126]
+    #data = data[data['N']>=126]
     names = data['Series'].unique()
     names.sort()
-    #names =['N2801','N1404'] # coment this line for executions
+    names = ['N2801','N1404','N1417','N1793'] # coment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -80,7 +80,8 @@ totalTime = None
 # Excel frame structure, changes os this data may affects buildSpreadSheet's
 # behavior on Utils class.
 cols = ['Series Name','SES','HOLT','NAIVE',
-        'AR','CR','CF-Mean','CF-Error']
+        'AR','CR','CF-Mean','CF-Error','BEST',
+        'Model','Mean','Std.']
 frame = pd.DataFrame(columns = cols)
 # To save on disk
 writer = pd.ExcelWriter(resultsPath+outputFileName+'.xls')
@@ -106,26 +107,45 @@ for metric in metrics:
                 newSeries = ut.Utils.buildM3DataFrame(data,serieName)
                 
             # Set intervals for evaluation
-            # --------T1--------T2--------->T
+            # 1--------T1--------T2--------->T
             T1 = int(len(newSeries)*(proportionList[0]/100))
             T2 = int(len(newSeries)*((proportionList[0]+proportionList[1])/100))
-           
+            
             # Fit model on validation data and get best
-            selector = ms.ModelSelector(data=newSeries,
+            validation = ms.ModelSelector(data=newSeries[:T2],
                                         models=modelsList,
-                                        #start=T2,
-                                          start=len(newSeries)-18,
+                                        start=T1,
                                         combType=combinationType[0],
-                                      combMetric=metric)
-            selector.fit()
+                                        combMetric=metric)
+            
+            test = ms.ModelSelector(data=newSeries,
+                                        models=modelsList,
+                                        start=T2,
+                                        combType=combinationType[0],
+                                        combMetric=metric)
+            
+            validation.fit()
+            test.fit()
+            
+            combinationByError = validation.getModelByName('CF1')
+            validation.removeModel('CF1')
+            validation.combType = 'equal'
+            validation.combinationFit()   
+            model = validation.getModelByName('CF1')
+            validation.modelsResult.append(combinationByError)
+            bestValidation,value = validation.getBestByMetric(metric)
+            
+            print(bestValidation.model)
+            
             # Add to DataFrame
             
             line = {}
-            for m in selector.modelsResult:
+            for m in test.modelsResult:
                 
                 errorValue = obj.ForecastErro.getValueByMetricName(m.error,metric)
                 
                 if m.model == 'CF1':
+                    combinationByError = m
                     line['CF-Error'] = errorValue
                 else:
                     line[m.model] = errorValue
@@ -133,24 +153,27 @@ for metric in metrics:
             line['Series Name'] = serieName
             
             # Fit with equal weigths
+            test.removeModel('CF1')
+            test.combType = 'equal'
+            test.combinationFit()   
+            model = test.getModelByName('CF1')
             
-            selector.removeModel('CF1')
-            selector.combType = 'equal'
-            selector.combinationFit()   
-            model = selector.getModelByName('CF1')
             line['CF-Mean'] = obj.ForecastErro.getValueByMetricName(model.error,metric)
+            
+            bestVal,value = validation.getBestByMetric(metric)
+            
             frame = frame.append(line,ignore_index=True)
         
-        # Sumary of data / make plots
-        summaryCols = ['Model','Mean','Std.']
-        summaryFrame = pd.DataFrame(columns=summaryCols)
+            
+        
+        
         legends = []
-        for m in frame.columns[1:]:
+        for m in frame.columns[1:8]:
             
             modelName = m
             meanError = frame[m].mean()
             std = frame[m].std()
-            summaryFrame = summaryFrame.append({'Model':modelName,
+            frame = frame.append({'Model':modelName,
                                                 'Mean':meanError,
                                                 'Std.':std},
                                               ignore_index=True)
@@ -163,93 +186,12 @@ for metric in metrics:
         plt.legend(legends)
         plt.savefig(imagePath+metric+freq+outputFileName+'.png',dpi = 800)
         plt.close()
-        frame = frame.append(summaryFrame,sort=False,ignore_index=True)
         frame.to_excel(excel_writer=writer,sheet_name=freq+metric,index=False)
     
-writer.save()
+writer.save()'''
 
-#old
-'''for freq in frequency:
-    print(freq)
-    
-    for prop in proportionList:
-        
-        proportionText = str(prop)
-        proportionText = re.sub('[\,\[\] ]','',proportionText)
-        frame = pd.DataFrame(columns=cols)
-        
-        print(proportionText)
-        
-        for serieName in names:
-            
-            print()
-            print('Series:'+serieName)
-            
-            if not m3:
-                # Get data
-                serie = ut.Utils.readCorredica(serieName,data,sheet_names)
-                # Proccess series on same frequency
-                sampleObj = serie.resample(freq)
-                newSeries  = sampleObj.sum()
-            else:
-                newSeries = ut.Utils.buildM3DataFrame(data,serieName,30)
-                
-            # Set intervals for evaluation
-            # --------T1--------T2--------->T
-            T1 = int(len(newSeries)*(prop[0]/100))
-            T2 = int(len(newSeries)*((prop[0]+prop[1])/100))
-            print(T1)
-            print(T2)
-            print(len(newSeries))
-            # Fit model on validation data and get best
-            selector = ms.ModelSelector(data=newSeries[:T2],
-                                        models=modelsList,
-                                        start=T1,
-                                        combType=combinationType,
-                                        combMetric=metric)
-            selector.fit()
-            bestValidation,valueValidation = selector.getBestByMetric(metric)
-            
-            combinationModel = selector.getModelByName('CF1')
-            plt.plot(newSeries[T1:T2],'black')
-            conjuntoDeTeste = combinationModel.testPrediction
-            plt.plot(conjuntoDeTeste,'blue')
-            plt.plot(bestValidation.testPrediction,'red')
-            plt.title('Corrediça em '+serieName)
-            plt.xlabel('Time')
-            plt.ylabel('Demand')
-            plt.gcf().autofmt_xdate()
-            plt.savefig(imagePath+serieName+freq+proportionText+
-                        '- corredica.png',dpi = 800)
-            plt.close()
-            
-            #Get metric values on test data
-            selector = ms.ModelSelector(data=newSeries,
-                                        models=modelsList,
-                                        start=T2,
-                                        combType=combinationType,
-                                        combMetric=metric)
-            selector.fit()
-            bestTest,valueTest = selector.getBestByMetric(metric)
-            
-            # Add to DataFrame
-            line = {
-                    'Series Name':serieName,
-                    'Size':len(newSeries),
-                    'Validation': bestValidation.model,
-                    'Error':valueValidation,
-                    'Test': bestTest.model,
-                    'Error Test': valueTest,
-                    }
-            
-            frame = frame.append(line,ignore_index=True)
-        
-        # Build xlsx
-        ut.Utils.buildSpreadSheet(proportionText,frame,freq,writer)
-        
-writer.save()
 totalTime = dt.datetime.now() - startTime
 print()
 print('Time to run tests:')
 print(totalTime)
-print()'''
+print()
