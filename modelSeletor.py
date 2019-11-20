@@ -345,7 +345,7 @@ class ModelSelector:
         
         for m in self.modelsResult:
             
-            if m.model != 'CF1':
+            if m.model not in ['CF-Mean','CF-Error']:
                 traningMatrix = np.append(traningMatrix,
                                       m.trainingPrediction.values)
                 testMatrix = np.append(testMatrix,
@@ -359,7 +359,10 @@ class ModelSelector:
         forecastMatrix = np.reshape(forecastMatrix,[self.numModels, self.horizon])
         
         # Step 3: compute forecasts by matrix multiplication
-        modelName = 'CF1'
+        if self.combType == 'equal':
+            modelName = 'CF-Mean'
+        else:
+            modelName = 'CF-Error'
         
         if self.combType == 'trimmed':
             # Exclude min and max from each predictions (lines)

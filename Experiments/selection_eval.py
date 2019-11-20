@@ -30,9 +30,24 @@ import re # REGEX Operation
 
 warnings.filterwarnings("ignore")
 
+def improvedScore(dataFrame,benchmark):
+    
+    numOfImproved = 0 
+    
+    for i in range(len(dataFrame)):
+        
+        best = dataFrame.iloc[[i]]['BEST'].values
+        best = dataFrame.iloc[[i]][best].values
+        mean = dataFrame.iloc[[i]][benchmark].values[0]
+       
+        if best < mean:
+            numOfImproved +=1
+       
+    return (numOfImproved/(len(dataFrame)))*100    
+
 # Data source, directory data
-#dataFile = u'Demanda corrediça.xlsx'
-dataFile = 'M3C.xls'
+dataFile = u'Demanda corrediça.xlsx'
+#dataFile = 'M3C.xls'
 path = '../Dataset/'
 imagePath = '../Images/Error/'
 resultsPath = '../Results/'
@@ -40,9 +55,9 @@ outputFileName = None
 m3 = dataFile=='M3C.xls'
 
 # Experiment configuration
-metrics= ['MASE','RMSE']
+metrics= ['MASE','RMSE']#,'MAPE']
 horizon = 1
-frequency = ['M','W','D']
+frequency = ['M']#,'W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
 proportionList = [60,20,20]
 combinationType= ['errorBased','equal']
@@ -59,7 +74,7 @@ if not m3:
     filiais = filiais['Unidade'].str.replace("  +","") #remove space
     names = filiais.unique()
     names.sort()
-    names = ['Porto Velho','São Paulo'] # coment this line for executions
+    #names = ['Porto Velho','São Paulo'] # coment this line for executions
     
 else:
     
@@ -71,7 +86,7 @@ else:
     #data = data[data['N']>=126]
     names = data['Series'].unique()
     names.sort()
-    names = ['N2801','N1404','N1417','N1793'] # coment this line for executions
+    names = ['N2801','N1404','N1417','N1793','N1428'] # coment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -81,7 +96,7 @@ totalTime = None
 # behavior on Utils class.
 cols = ['Series Name','SES','HOLT','NAIVE',
         'AR','CR','CF-Mean','CF-Error','BEST',
-        'Model','Mean','Std.']
+        'Model','Mean','Std.','% Improved']
 frame = pd.DataFrame(columns = cols)
 # To save on disk
 writer = pd.ExcelWriter(resultsPath+outputFileName+'.xls')
@@ -127,45 +142,36 @@ for metric in metrics:
             validation.fit()
             test.fit()
             
-            combinationByError = validation.getModelByName('CF1')
-            validation.removeModel('CF1')
+            combinationByError = validation.getModelByName('CF-Error')
+            validation.removeModel('CF-Error')
             validation.combType = 'equal'
             validation.combinationFit()   
-            model = validation.getModelByName('CF1')
             validation.modelsResult.append(combinationByError)
+            
             bestValidation,value = validation.getBestByMetric(metric)
             
-            print(bestValidation.model)
+            combinationByError = test.getModelByName('CF-Error')
+            test.removeModel('CF-Error')
+            test.combType = 'equal'
+            test.combinationFit()   
+            test.modelsResult.append(combinationByError)
+            
             
             # Add to DataFrame
-            
             line = {}
             for m in test.modelsResult:
                 
                 errorValue = obj.ForecastErro.getValueByMetricName(m.error,metric)
-                
-                if m.model == 'CF1':
-                    combinationByError = m
-                    line['CF-Error'] = errorValue
-                else:
-                    line[m.model] = errorValue
+                line[m.model] = errorValue
                 
             line['Series Name'] = serieName
-            
-            # Fit with equal weigths
-            test.removeModel('CF1')
-            test.combType = 'equal'
-            test.combinationFit()   
-            model = test.getModelByName('CF1')
-            
-            line['CF-Mean'] = obj.ForecastErro.getValueByMetricName(model.error,metric)
-            
-            bestVal,value = validation.getBestByMetric(metric)
-            
+            line['BEST'] = bestValidation.model
+             
             frame = frame.append(line,ignore_index=True)
         
-            
-        
+        improvedPct = improvedScore(frame,'CF-Mean')
+        frame = frame.append({'% Improved':round(improvedPct,4)},ignore_index=True)
+        print(improvedPct)
         
         legends = []
         for m in frame.columns[1:8]:
@@ -177,18 +183,10 @@ for metric in metrics:
                                                 'Mean':meanError,
                                                 'Std.':std},
                                               ignore_index=True)
-            legends.append(modelName)
-            plt.title('Error -'+metric)
-            plt.xlabel('Series no.')
-            plt.ylabel('Value')
-            plt.plot(frame[m].values)
             
-        plt.legend(legends)
-        plt.savefig(imagePath+metric+freq+outputFileName+'.png',dpi = 800)
-        plt.close()
         frame.to_excel(excel_writer=writer,sheet_name=freq+metric,index=False)
     
-writer.save()'''
+writer.save()
 
 totalTime = dt.datetime.now() - startTime
 print()
