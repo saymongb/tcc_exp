@@ -10,7 +10,7 @@ Note:       a) Save results in a ".xlsx" file.
 
 Fix: 
 Status: Validating         
-Next:
+Next: Generate data without selection of combination (equal)
        
 """
 
@@ -46,8 +46,8 @@ def improvedScore(dataFrame,benchmark):
     return (numOfImproved/(len(dataFrame)))*100    
 
 # Data source, directory data
-dataFile = u'Demanda corrediça.xlsx'
-#dataFile = 'M3C.xls'
+#dataFile = u'Demanda corrediça.xlsx'
+dataFile = 'M3C.xls'
 path = '../Dataset/'
 imagePath = '../Images/Error/'
 resultsPath = '../Results/'
@@ -55,9 +55,9 @@ outputFileName = None
 m3 = dataFile=='M3C.xls'
 
 # Experiment configuration
-metrics= ['MASE','RMSE']#,'MAPE']
+metrics= ['MASE','RMSE','MAPE']
 horizon = 1
-frequency = ['M']#,'W','D']
+frequency = ['M','W']#,'D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
 proportionList = [60,20,20]
 combinationType= ['errorBased','equal']
@@ -86,7 +86,7 @@ else:
     #data = data[data['N']>=126]
     names = data['Series'].unique()
     names.sort()
-    names = ['N2801','N1404','N1417','N1793','N1428'] # coment this line for executions
+    #names = ['N2801','N1404','N1417','N1793','N1428'] # coment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -119,7 +119,7 @@ for metric in metrics:
                 sampleObj = serie.resample(freq)
                 newSeries  = sampleObj.sum()
             else:
-                newSeries = ut.Utils.buildM3DataFrame(data,serieName)
+                newSeries = ut.Utils.buildM3DataFrame(data,serieName,31)
                 
             # Set intervals for evaluation
             # 1--------T1--------T2--------->T
@@ -171,7 +171,6 @@ for metric in metrics:
         
         improvedPct = improvedScore(frame,'CF-Mean')
         frame = frame.append({'% Improved':round(improvedPct,4)},ignore_index=True)
-        print(improvedPct)
         
         legends = []
         for m in frame.columns[1:8]:
