@@ -112,6 +112,24 @@ class Utils:
         p = nonZeros.size/timeSeries.size
         return p
     
+    '''Conform to 'On the categorization of demand patterns' 
+        (Syntetos,Boylan,Croston:2005)
+    '''
+    @staticmethod
+    def getDemandType(cv,adi):
+        
+        if adi <= 1.32 :
+            
+            if cv <= 0.49:
+                return 'smooth'
+            else:
+                return 'erratic'
+        else:
+            if cv <= 0.49:
+                return 'intermittent'
+            else:
+                return 'lumpy'
+    
     @staticmethod
     def getTimeSeriesStats(timeSeriesProcessed):
         # Creates a table's row with statistical data about an item

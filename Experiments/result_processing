@@ -25,6 +25,7 @@ def improvedScore(dataFrame):
 dataFile = 'selection_M3_full.xls'
 path = '../Results/selection_eval/'
 sheetName='MRMSE'
+imagePath = '../Images/
 
 data = pd.read_excel(path+dataFile,None)
 data = data.pop(sheetName)
