@@ -31,8 +31,8 @@ import re # REGEX Operation
 warnings.filterwarnings("ignore")
 
 # Data source, directory data
-dataFile = u'Demanda corrediça.xlsx'
-#dataFile = 'M3C.xls'
+#dataFile = u'Demanda corrediça.xlsx'
+dataFile = 'M3C.xls'
 path = '../Dataset/'
 imagePath = '../Images/Error/'
 resultsPath = '../Results/'
@@ -40,7 +40,7 @@ outputFileName = None
 m3 = dataFile=='M3C.xls'
 
 # Experiment configuration
-metrics= ['MASE','RMSE']
+metrics= ['MASE','RMSE','MAPE']
 horizon = 1
 frequency = ['M','W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
@@ -114,31 +114,26 @@ for metric in metrics:
             # Fit model on validation data and get best
             selector = ms.ModelSelector(data=newSeries,
                                         models=modelsList,
-                                        start=T2,
+                                        start=len(newSeries)-18,
                                         combType=combinationType[0],
                                         combMetric=metric)
             selector.fit()
             # Add to DataFrame
+           
+            model = selector.getModelByName('CF-Error')
+            selector.removeModel('CF-Error')
+            selector.combType = 'equal'
+            selector.combinationFit()   
+            selector.modelsResult.append(model)
             
             line = {}
             for m in selector.modelsResult:
                 
                 errorValue = obj.ForecastErro.getValueByMetricName(m.error,metric)
-                
-                if m.model == 'CF1':
-                    line['CF-Error'] = errorValue
-                else:
-                    line[m.model] = errorValue
+                line[m.model] = errorValue
                 
             line['Series Name'] = serieName
             
-            # Fit with equal weigths
-            
-            selector.removeModel('CF1')
-            selector.combType = 'equal'
-            selector.combinationFit()   
-            model = selector.getModelByName('CF1')
-            line['CF-Mean'] = obj.ForecastErro.getValueByMetricName(model.error,metric)
             frame = frame.append(line,ignore_index=True)
         
         legends = []

@@ -165,9 +165,9 @@ class ModelSelector:
                                                   use_brute = True) #grid search
             
         # Step 2: get fitted values for training, test and forecasts
-        trainingFit = pd.Series(np.ceil(self.fittedModel.fittedvalues))
-        testPredictions = pd.Series(np.ceil(self.fittedModel.forecast(len(self.testData))))
-        forecasts = pd.Series(np.ceil(self.fittedModelFinal.forecast(self.horizon)))
+        trainingFit = pd.Series(self.fittedModel.fittedvalues)
+        testPredictions = pd.Series(self.fittedModel.forecast(len(self.testData)))
+        forecasts = pd.Series(self.fittedModelFinal.forecast(self.horizon))
                
         # Step 3: set error
         errorObjs = self.setErrorData(trainingFit,testPredictions)
@@ -189,9 +189,9 @@ class ModelSelector:
         self.fittedModelFinal.fit()
         
         # Step 2: get fitted values for training, test and forecasts
-        trainingFit = pd.Series(np.ceil(self.fittedModel.fittedForecasts))
-        testPredictions = pd.Series(np.ceil(self.fittedModel.forecast(len(self.testData))))
-        forecasts = pd.Series(np.ceil(self.fittedModelFinal.forecast(self.horizon)))
+        trainingFit = pd.Series(self.fittedModel.fittedForecasts)
+        testPredictions = pd.Series(self.fittedModel.forecast(len(self.testData)))
+        forecasts = pd.Series(self.fittedModelFinal.forecast(self.horizon))
                
         # Step 3: set error
         errorObjs = self.setErrorData(trainingFit,testPredictions)
@@ -209,19 +209,19 @@ class ModelSelector:
         # Step 1: set training and test values
         self.fittedModel = ar.AR(self.trainData)
         self.fittedModel = self.fittedModel.fit()
-        trainingFit = pd.Series(np.ceil(self.fittedModel.fittedvalues))
-        testPredictions = pd.Series(np.ceil(self.fittedModel.predict(
+        trainingFit = pd.Series(self.fittedModel.fittedvalues)
+        testPredictions = pd.Series(self.fittedModel.predict(
                 start=len(self.trainData),
                 end=len(self.trainData)+len(self.testData)-1,
-                dynamic=False)))
+                dynamic=False))
         
         # Step 2: Training again with all data for acurate forecasts
         self.fittedModelFinal = ar.AR(self.data)
         self.fittedModelFinal = self.fittedModelFinal.fit()
-        forecasts = pd.Series(np.ceil(self.fittedModelFinal.predict(
+        forecasts = pd.Series(self.fittedModelFinal.predict(
                 start=len(self.data),
                 end=len(self.data)+self.horizon-1,
-                dynamic=False)))
+                dynamic=False))
         
         '''Step 3: set error
             for AR, the size of trainData will be different from
@@ -376,9 +376,9 @@ class ModelSelector:
             testPredictions = np.matmul(coefs,testMatrix)
             forecasts = np.matmul(coefs,forecastMatrix)
         
-        trainingFit = pd.Series(np.ceil(trainingFit),trainingIdx)
-        testPredictions = pd.Series(np.ceil(testPredictions),testIdx)
-        forecasts = pd.Series(np.ceil(forecasts),forecastIdx)
+        trainingFit = pd.Series(trainingFit,trainingIdx)
+        testPredictions = pd.Series(testPredictions,testIdx)
+        forecasts = pd.Series(forecasts,forecastIdx)
            
         
         errorObjs = self.setErrorData(trainingFit,testPredictions)

@@ -40,11 +40,11 @@ path = '../Dataset/'
 imagePath = '../Images/'
 resultsPath = '../Results/'
 frequency = 'M'#2W, 3W,D,W
-modelo = ['AR']#['AR','HOLT','SES','NAIVE','CF1','CR']
+modelo = ['AR','SES']#['AR','HOLT','SES','NAIVE','CF1','CR']
 sheet_names = ['2017','2018','2019']
 # ip da máquina virtual/Windows 7
-url = "http://localhost:8090/forecastingMethods/Statistical/"
-#url = 'http://ec2-18-189-180-102.us-east-2.compute.amazonaws.com:8090/forecastingMethods/Statistical'
+#url = "http://localhost:8090/forecastingMethods/Statistical/"
+url = 'http://ec2-18-189-180-102.us-east-2.compute.amazonaws.com:8090/forecastingMethods/Statistical'
 headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 prop=80
 cores = np.random.rand(len(modelo),3)

@@ -57,7 +57,7 @@ m3 = dataFile=='M3C.xls'
 # Experiment configuration
 metrics= ['MASE','RMSE','MAPE']
 horizon = 1
-frequency = ['M','W']#,'D']
+frequency = ['M']#,'W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
 proportionList = [60,20,20]
 combinationType= ['errorBased','equal']
@@ -80,10 +80,10 @@ else:
     
     # Specific to M3-Competition monthly data
     # Extract series conform to https://doi.org/10.1016/j.jbusres.2015.03.028
-    outputFileName = 'selection_M3'
+    outputFileName = 'selection_M3_30'
     frequency = ['M']
     data = data.pop('M3Month')
-    #data = data[data['N']>=126]
+    #data = data[data['N']>=60]
     names = data['Series'].unique()
     names.sort()
     #names = ['N2801','N1404','N1417','N1793','N1428'] # coment this line for executions
@@ -102,7 +102,7 @@ frame = pd.DataFrame(columns = cols)
 writer = pd.ExcelWriter(resultsPath+outputFileName+'.xls')
 
 for metric in metrics:
-    
+    print(metric)
     for freq in frequency:
         
         frame = pd.DataFrame(columns = cols)
@@ -119,7 +119,7 @@ for metric in metrics:
                 sampleObj = serie.resample(freq)
                 newSeries  = sampleObj.sum()
             else:
-                newSeries = ut.Utils.buildM3DataFrame(data,serieName,31)
+                newSeries = ut.Utils.buildM3DataFrame(data,serieName)
                 
             # Set intervals for evaluation
             # 1--------T1--------T2--------->T
@@ -169,7 +169,7 @@ for metric in metrics:
              
             frame = frame.append(line,ignore_index=True)
         
-        improvedPct = improvedScore(frame,'CF-Mean')
+        improvedPct = improvedScore(frame,'NAIVE')
         frame = frame.append({'% Improved':round(improvedPct,4)},ignore_index=True)
         
         legends = []
