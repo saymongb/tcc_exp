@@ -71,7 +71,7 @@ else:
     #data = data[data['N']>=126]
     names = data['Series'].unique()
     names.sort()
-    #names = ['N2801','N1404'] # coment this line for executions
+    names = ['N2801','N1404'] # coment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -152,12 +152,12 @@ for metric in metrics:
             plt.ylabel('Value')
             plt.plot(frame[m].values)
             
-        plt.legend(legends)
-        plt.savefig(imagePath+metric+freq+outputFileName+'.png',dpi = 800)
-        plt.close()
+        #plt.legend(legends)
+        #plt.savefig(imagePath+metric+freq+outputFileName+'.png',dpi = 800)
+       # plt.close()
         frame.to_excel(excel_writer=writer,sheet_name=freq+metric,index=False)
     
-writer.save()
+#writer.save()
 
 #old
 '''for freq in frequency:

@@ -80,13 +80,13 @@ else:
     
     # Specific to M3-Competition monthly data
     # Extract series conform to https://doi.org/10.1016/j.jbusres.2015.03.028
-    outputFileName = 'selection_M3_30'
+    outputFileName = 'selection_M3_FULL_36-18'
     frequency = ['M']
     data = data.pop('M3Month')
     #data = data[data['N']>=60]
     names = data['Series'].unique()
     names.sort()
-    #names = ['N2801','N1404','N1417','N1793','N1428'] # coment this line for executions
+    #names = ['N2801','N1404','N1417','N1793','N1428','N1468','N1495'] # coment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -125,6 +125,9 @@ for metric in metrics:
             # 1--------T1--------T2--------->T
             T1 = int(len(newSeries)*(proportionList[0]/100))
             T2 = int(len(newSeries)*((proportionList[0]+proportionList[1])/100))
+            
+            T1 = len(newSeries)-36
+            T2 = len(newSeries)-18
             
             # Fit model on validation data and get best
             validation = ms.ModelSelector(data=newSeries[:T2],

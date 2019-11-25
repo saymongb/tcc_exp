@@ -15,10 +15,7 @@ Note:
                      Journal of the Operational Research Society,
                      DOI: 10.1057/palgrave.jors.2602569
                      
-Fix: a) Set numeric precision to 14 decimal places validate with example of:
-            https://otexts.com/fpp2/counts.html
-     b) 
-    
+Fix: 
     Status: Testing Croston Method.
 '''
 
@@ -152,7 +149,6 @@ class Croston:
         
     
     def optimize(self):
-       # Implement grid search
-      minAlpha = 0.1
-      maxAlpha = 0.3
-      step = 100
+      # Use brute from SciPy
+      a = []
+      print(a)

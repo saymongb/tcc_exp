@@ -39,13 +39,13 @@ import re # REGEX Operation
 warnings.filterwarnings("ignore")
 
 # Data source, directory data
-#dataFile = u'Demanda corrediça.xlsx'
-dataFile = 'M3C.xls'
+dataFile = u'Demanda corrediça.xlsx'
+#dataFile = 'M3C.xls'
 path = '../Dataset/'
 imagePath = '../Images/'
 m3 = dataFile=='M3C.xls'
 freq = 'M'
-
+mean = 0
 # Experiment configuration
 
 data = pd.read_excel(path+dataFile,None)
@@ -89,16 +89,19 @@ for serieName in names:
         
     cv = ut.Utils.getCV(newSeries)
     adi = ut.Utils.getADI(newSeries)
+    mean += len(newSeries)
+    
     print('CV:'+str(cv)+',ADI:'+str(adi))
     print(ut.Utils.getDemandType(cv,adi))
     if ut.Utils.getDemandType(cv,adi) in ['lumpy','intermittent']:
         count+=1
-    plt.title('Series nº '+serieName[1:])
-    plt.xlabel('Time')
-    plt.ylabel('Demand value')
-    plt.plot(newSeries)
-    plt.gcf().autofmt_xdate()
-    plt.savefig(imagePath+serieName+'.png',dpi = 800)
-    plt.close()
+    #plt.title('Series nº '+serieName[1:])
+    #plt.xlabel('Time')
+    #plt.ylabel('Demand value')
+    #plt.plot(newSeries)
+    #plt.gcf().autofmt_xdate()
+    #plt.savefig(imagePath+serieName+'.png',dpi = 800)
+    #plt.close()
 print(100*count/54)
 print(count)
+print(mean/54)

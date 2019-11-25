@@ -22,13 +22,15 @@ def improvedScore(dataFrame):
     return newFrame.mean(),newFrame.std()    
 
 # Data source, directory data
-dataFile = 'selection_M3_full.xls'
-path = '../Results/selection_eval/'
-sheetName='MRMSE'
-imagePath = '../Images/
+dataFile = 'selection_M3_60_36-18.xls'
+path = '../Results/'
+sheetName= ['MMASE','MRMSE']
+imagePath = '../Images/'
 
-data = pd.read_excel(path+dataFile,None)
-data = data.pop(sheetName)
-mean,std = improvedScore(data)
-print()
-print('Mean:'+str(mean)+',std:'+str(std))
+for sheet in sheetName:
+    print()
+    print(sheet)
+    data = pd.read_excel(path+dataFile,None)
+    data = data.pop(sheet)
+    mean,std = improvedScore(data)
+    print('Mean:'+str(mean)+',std:'+str(std))
