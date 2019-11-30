@@ -40,7 +40,7 @@ outputFileName = None
 m3 = dataFile=='M3C.xls'
 
 # Experiment configuration
-metrics= ['MASE','RMSE','MAPE']
+metrics= ['MASE']#,'RMSE','MAPE']
 horizon = 1
 frequency = ['M','W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
@@ -71,7 +71,7 @@ else:
     #data = data[data['N']>=126]
     names = data['Series'].unique()
     names.sort()
-    names = ['N2801','N1404'] # coment this line for executions
+    names = ['N2801','N1675','N2750','N1403','N1711','N1527','N1514']#,'N1404'] # coment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -114,6 +114,7 @@ for metric in metrics:
             # Fit model on validation data and get best
             selector = ms.ModelSelector(data=newSeries,
                                         models=modelsList,
+                                        horizon = 18,
                                         start=len(newSeries)-18,
                                         combType=combinationType[0],
                                         combMetric=metric)
@@ -126,7 +127,7 @@ for metric in metrics:
             selector.combinationFit()   
             selector.modelsResult.append(model)
             
-            line = {}
+            '''line = {}
             for m in selector.modelsResult:
                 
                 errorValue = obj.ForecastErro.getValueByMetricName(m.error,metric)
@@ -134,28 +135,51 @@ for metric in metrics:
                 
             line['Series Name'] = serieName
             
-            frame = frame.append(line,ignore_index=True)
+            frame = frame.append(line,ignore_index=True)'''
         
-        legends = []
-        for m in frame.columns[1:8]:
+            '''legends = []
+            for m in frame.columns[1:8]:
+                
+                modelName = m
+                meanError = frame[m].mean()
+                std = frame[m].std()
+                frame = frame.append({'Model':modelName,
+                                                    'Mean':meanError,
+                                                    'Std.':std},
+                                                  ignore_index=True)
+                legends.append(modelName)
+                plt.title('Error -'+metric)
+                plt.xlabel('Series no.')
+                plt.ylabel('Value')
+                plt.plot(frame[m].values)'''
+                
+            m1 = selector.modelsResult[2]
+            plt.title('Series no. '+serieName)
+            plt.plot(newSeries,'black')
+            plt.plot(m1.trainingPrediction.append(m1.testPrediction),'blue')
+            #plt.plot(m1.testPrediction,'blue')
+            plt.plot(m1.forecastDemand,'blue')
+            m2 = selector.modelsResult[0]
+            plt.plot(m2.trainingPrediction.append(m2.testPrediction),'green')
+            #plt.plot(m2.testPrediction,'green')
+            plt.plot(m2.forecastDemand,'green')
+            m3 = selector.modelsResult[6]
+            plt.plot(m3.trainingPrediction.append(m3.testPrediction),'brown')
+            #plt.plot(m3.testPrediction,'silver')
+            plt.plot(m3.forecastDemand,'brown')
             
-            modelName = m
-            meanError = frame[m].mean()
-            std = frame[m].std()
-            frame = frame.append({'Model':modelName,
-                                                'Mean':meanError,
-                                                'Std.':std},
-                                              ignore_index=True)
-            legends.append(modelName)
-            plt.title('Error -'+metric)
-            plt.xlabel('Series no.')
-            plt.ylabel('Value')
-            plt.plot(frame[m].values)
             
-        #plt.legend(legends)
-        #plt.savefig(imagePath+metric+freq+outputFileName+'.png',dpi = 800)
-       # plt.close()
-        frame.to_excel(excel_writer=writer,sheet_name=freq+metric,index=False)
+            plt.gcf().autofmt_xdate()
+    
+    
+    
+            plt.legend(['Real',
+                        m1.model,
+                        m2.model,
+                        m3.model])
+            plt.savefig(imagePath+metric+freq+outputFileName+serieName+'.png',dpi = 800)
+            plt.close()
+            #frame.to_excel(excel_writer=writer,sheet_name=freq+metric,index=False)
     
 #writer.save()
 

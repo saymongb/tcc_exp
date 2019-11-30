@@ -63,6 +63,7 @@ class ModelSelector:
         self.fittedModelFinal = None # used as auxiliary variable
         self.horizon = horizon
         self.prop = prop
+        self.weights = None
         self.numModels = len(models)
         self.noCount = 0 # number of models not disregarded to combination
         self.combType = combType
@@ -329,7 +330,8 @@ class ModelSelector:
         '''
         
         # Step 1: set weights
-        coefs = self.setWeights()
+        if self.weights is None:
+            self.setWeights()
         # Step 2: build matrix of training/test/forecast values
         traningMatrix = np.array([])
         testMatrix = np.array([])
@@ -372,21 +374,19 @@ class ModelSelector:
             
         else: 
         
-            trainingFit = np.matmul(coefs,traningMatrix)
-            testPredictions = np.matmul(coefs,testMatrix)
-            forecasts = np.matmul(coefs,forecastMatrix)
+            trainingFit = np.matmul(self.weights,traningMatrix)
+            testPredictions = np.matmul(self.weights,testMatrix)
+            forecasts = np.matmul(self.weights,forecastMatrix)
         
         trainingFit = pd.Series(trainingFit,trainingIdx)
         testPredictions = pd.Series(testPredictions,testIdx)
         forecasts = pd.Series(forecasts,forecastIdx)
            
-        
         errorObjs = self.setErrorData(trainingFit,testPredictions)
         
         # Add to ModelsResult list        
         self.setModelResults(modelName,errorObjs,trainingFit,
                             testPredictions,forecasts)
-        
        
     def isFitted(self,modelName):
         
@@ -450,9 +450,10 @@ class ModelSelector:
             
             coefVector = np.array(coefVector)
             coefVector[:] = coefVector[:]/coefVector.sum() 
-
-        return coefVector
         
+        self.weights = coefVector
+        
+    
     # Build a ForecastErro list
     def setErrorData(self,trainingFit,testPredictions):
         

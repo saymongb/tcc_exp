@@ -55,7 +55,7 @@ outputFileName = None
 m3 = dataFile=='M3C.xls'
 
 # Experiment configuration
-metrics= ['MASE','RMSE','MAPE']
+metrics= ['MASE','RMSE']#,'MAPE']
 horizon = 1
 frequency = ['M']#,'W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
@@ -80,7 +80,7 @@ else:
     
     # Specific to M3-Competition monthly data
     # Extract series conform to https://doi.org/10.1016/j.jbusres.2015.03.028
-    outputFileName = 'selection_M3_FULL_36-18'
+    outputFileName = 'selection_M3_FULL'
     frequency = ['M']
     data = data.pop('M3Month')
     #data = data[data['N']>=60]
@@ -126,9 +126,6 @@ for metric in metrics:
             T1 = int(len(newSeries)*(proportionList[0]/100))
             T2 = int(len(newSeries)*((proportionList[0]+proportionList[1])/100))
             
-            T1 = len(newSeries)-36
-            T2 = len(newSeries)-18
-            
             # Fit model on validation data and get best
             validation = ms.ModelSelector(data=newSeries[:T2],
                                         models=modelsList,
@@ -143,23 +140,26 @@ for metric in metrics:
                                         combMetric=metric)
             
             validation.fit()
-            test.fit()
+            
+            test.weights = validation.weights
             
             combinationByError = validation.getModelByName('CF-Error')
             validation.removeModel('CF-Error')
             validation.combType = 'equal'
+            validation.weights = None
             validation.combinationFit()   
             validation.modelsResult.append(combinationByError)
             
             bestValidation,value = validation.getBestByMetric(metric)
             
+            test.fit()
             combinationByError = test.getModelByName('CF-Error')
             test.removeModel('CF-Error')
             test.combType = 'equal'
+            test.weights = None
             test.combinationFit()   
             test.modelsResult.append(combinationByError)
-            
-            
+                        
             # Add to DataFrame
             line = {}
             for m in test.modelsResult:
