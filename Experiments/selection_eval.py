@@ -53,13 +53,13 @@ imagePath = '../Images/Error/'
 resultsPath = '../Results/'
 outputFileName = None
 m3 = dataFile=='M3C.xls'
-
+imagePath = '../Images/'
 # Experiment configuration
-metrics= ['MASE','RMSE']#,'MAPE']
+metrics= ['RMSE']#,'MAPE']
 horizon = 1
 frequency = ['M']#,'W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
-proportionList = [60,20,20]
+proportionList = [60,10,30]
 combinationType= ['errorBased','equal']
 
 colors = np.random.rand(len(modelsList),3) # to plot
@@ -86,7 +86,7 @@ else:
     #data = data[data['N']>=60]
     names = data['Series'].unique()
     names.sort()
-    #names = ['N2801','N1404','N1417','N1793','N1428','N1468','N1495'] # coment this line for executions
+    names = ['N2801','N1404','N1417','N1793','N1428','N1468','N1495'] # coment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -159,7 +159,20 @@ for metric in metrics:
             test.weights = None
             test.combinationFit()   
             test.modelsResult.append(combinationByError)
-                        
+            print(len(newSeries))
+            m1 = test.getModelByName('CF-Mean')
+            m2 = test.getModelByName('NAIVE')
+            m3 = test.getModelByName('HOLT')
+            m1_demands = m1.testPrediction
+            #m4 = test.getModelByName('AR')
+            
+            plt.plot(newSeries,'black')
+            plt.xlabel('Time')
+            plt.ylabel('Demand Value')
+            plt.gcf().autofmt_xdate()
+            plt.savefig(imagePath+serieName+'.png',dpi = 800)
+            plt.close()
+            
             # Add to DataFrame
             line = {}
             for m in test.modelsResult:
