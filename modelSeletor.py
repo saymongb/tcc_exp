@@ -18,8 +18,8 @@ Status: Implementing one-step-ahead forecast.
     a) SES, OK.
     b) NAIVE, OK.
     c) HOLT, OK.
-    d) CR,
-    e) AR,
+    d) CR, OK.
+    e) AR, -> Implementar forecast do AR.
     f) CF
             
 '''
@@ -228,7 +228,14 @@ class ModelSelector:
         
         # Step 2: get fitted values for training, test and forecasts
         trainingFit = pd.Series(self.fittedModel.fittedForecasts)
-        testPredictions = pd.Series(self.fittedModel.forecast(len(self.testData)))
+        
+        if self.stepType == 'multi':
+            testPredictions = pd.Series(self.fittedModel.forecast(len(self.testData)))
+        else:
+            testPredictions = pd.Series(
+                    self.fittedModelFinal.fittedForecasts[self.start:]
+                    )
+            
         forecasts = pd.Series(self.fittedModelFinal.forecast(self.horizon))
                
         # Step 3: set error

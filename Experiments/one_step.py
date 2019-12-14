@@ -14,36 +14,41 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import modelSeletor as ms
 
-data = [1.0,4,2,6,7,8,5,11,10,20]
+data = [1.0,4,6,5,7,8,5,7,10,20]
 index = pd.date_range(start='01/01/2019',periods=10,freq='M')
 series = pd.Series(data,index)
 start = int(len(series.values)*0.8)
 print('Série real:')
 print(series)
 print()
-# Fit a model
-SES = ts.Holt(series[:start])
-SES = SES.fit(optimized = True,use_brute = True)
-SESParams = SES.params
-SES2  = ts.Holt(series)
-SES2 = SES2.fit(smoothing_level=SESParams['smoothing_level'],
-              optimized=False,
-              smoothing_slope = SESParams['smoothing_slope'],
-                        initial_slope = SESParams['initial_slope'],          
-              initial_level=SESParams['initial_level'],
-              use_brute=False)
 
-print('Treinamento:')
-print(SES.fittedvalues)
-print()
-print('Teste')
-print(SES2.fittedvalues)
-print()
-seletor = ms.ModelSelector(series,1,['SES'],80,stepType='multi')
+seletor = ms.ModelSelector(series,1,['CR'],80,stepType='one')
 seletor.fit()
-print('Resultados do seletor:')
+'''print('Resultados do seletor:')
 print(seletor.modelsResult[0].trainingPrediction)
 
 print(seletor.modelsResult[0].testPrediction)
-print(seletor.modelsResult[0].error[0].value)
+print(seletor.modelsResult[0].error[0].value)'''
 
+print('Ajuste do AR:')
+AR = ar.AR(series[:start])
+AR = AR.fit()
+trainingFit = pd.Series(AR.fittedvalues)
+
+testPredictions = pd.Series(AR.predict(start=start,end=len(series)-1,dynamic=False))
+AR.model.endog = series.values
+AR.model.data = series
+
+testPredictions2 = pd.Series(AR.predict(start=start,
+                                         end=len(series)-1,
+                                         dynamic=False))
+
+print('Treinamento:')
+print(trainingFit)
+print('Teste')
+print(testPredictions)
+print('Test2')
+print(testPredictions2)
+print("Parametros")
+print(AR.params)
+print("<-------------------------------->")
