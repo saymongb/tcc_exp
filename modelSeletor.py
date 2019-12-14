@@ -13,8 +13,15 @@ Note:       Implement first item level selection, include ARIMA models.
                             Croston Method (CR),
                             Combination Forecast (CF),
                             Automatic selection procedure based on RMSE (AUTO)
-Fix: Method for removal a model.
-Status: Implement Croston methods. Implement trimmed combination.        
+Fix: 
+Status: Implementing one-step-ahead forecast.
+    a) SES, OK.
+    b) NAIVE, OK.
+    c) HOLT, OK.
+    d) CR,
+    e) AR,
+    f) CF
+            
 '''
 
 import statsmodels.tsa.holtwinters as ts
@@ -37,13 +44,14 @@ class ModelSelector:
     _decimalPlaces= 4
     
     def __init__(self,data,horizon=1,models=['AUTO'], prop=80,start=None,
-                 combType='equal', combMetric='RMSE'):
+                 combType='equal', combMetric='RMSE', stepType='multi'):
         '''Parameters
            ----------
            
             data: a Pandas.Series representing a historic of an item (time-series)
             horizon: number of forecats required
             start: index to initial forecast on training set
+            stepType: ['multi','one'] the type of error calculations on test data.
             prop: proportion of training/test-sample to fit a model, default 80-20.
             combType: type of combination ['equal','errorBased','trimmed'] method to be used
             combMetric: metric used to compute the weights of each method
@@ -52,7 +60,7 @@ class ModelSelector:
         if start:
             self.start = start
         else:    
-            self.start = math.ceil(len(data)*(prop/100))
+            self.start = math.ceil(len(data.values)*(prop/100))
         
         self.data = data
         self.trainData = data[:self.start]
@@ -62,6 +70,7 @@ class ModelSelector:
         self.fittedModel = None # used as auxiliary variable
         self.fittedModelFinal = None # used as auxiliary variable
         self.horizon = horizon
+        self.stepType = stepType
         self.prop = prop
         self.weights = None
         self.numModels = len(models)
@@ -164,12 +173,40 @@ class ModelSelector:
              self.fittedModelFinal = ts.Holt(self.data)
              self.fittedModelFinal = self.fittedModelFinal.fit(optimized = True,
                                                   use_brute = True) #grid search
-            
+        
         # Step 2: get fitted values for training, test and forecasts
         trainingFit = pd.Series(self.fittedModel.fittedvalues)
-        testPredictions = pd.Series(self.fittedModel.forecast(len(self.testData)))
         forecasts = pd.Series(self.fittedModelFinal.forecast(self.horizon))
-               
+        
+        if self.stepType == 'multi':    
+            
+            testPredictions = pd.Series(self.fittedModel.forecast(len(self.testData)))    
+            
+        else: 
+            # Compute one-step-ahead forecast over the test data
+            SESParams = self.fittedModel.params
+            self.fittedModel = ts.SimpleExpSmoothing(self.data)
+            
+            if modelName == 'HOLT':
+                self.fittedModel = ts.Holt(self.data)    
+                self.fittedModel = self.fittedModel.fit(
+                        smoothing_level=SESParams['smoothing_level'],
+                        optimized=False,
+                        smoothing_slope = SESParams['smoothing_slope'],
+                        initial_slope = SESParams['initial_slope'],
+                        initial_level=SESParams['initial_level'],
+                        use_brute=False)
+                
+            else:
+                
+                self.fittedModel = self.fittedModel.fit(
+                        smoothing_level=SESParams['smoothing_level'],
+                        optimized=False,
+                        initial_level=SESParams['initial_level'],
+                        use_brute=False)
+                
+            testPredictions = self.fittedModel.fittedvalues[self.start:]
+            
         # Step 3: set error
         errorObjs = self.setErrorData(trainingFit,testPredictions)
         
