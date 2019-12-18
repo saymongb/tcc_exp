@@ -10,7 +10,7 @@ Note:       a) Save results in a ".xlsx" file.
 
 Fix: 
 Status: Validating         
-Next: Generate data without selection of combination (equal)
+Next:
        
 """
 
@@ -46,8 +46,8 @@ def improvedScore(dataFrame,benchmark):
     return (numOfImproved/(len(dataFrame)))*100    
 
 # Data source, directory data
-#dataFile = u'Demanda corrediça.xlsx'
-dataFile = 'M3C.xls'
+dataFile = u'Demanda corrediça.xlsx'
+#dataFile = 'M3C.xls'
 path = '../Dataset/'
 imagePath = '../Images/Error/'
 resultsPath = '../Results/'
@@ -59,7 +59,7 @@ metrics= ['RMSE']#,'MAPE']
 horizon = 1
 frequency = ['M']#,'W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
-proportionList = [60,10,30]
+proportionList = [60,20,20]
 combinationType= ['errorBased','equal']
 
 colors = np.random.rand(len(modelsList),3) # to plot
@@ -126,18 +126,23 @@ for metric in metrics:
             T1 = int(len(newSeries)*(proportionList[0]/100))
             T2 = int(len(newSeries)*((proportionList[0]+proportionList[1])/100))
             
+            #T1 = len(newSeries) - 36
+            #T2 = len(newSeries) - 18
+            
             # Fit model on validation data and get best
             validation = ms.ModelSelector(data=newSeries[:T2],
                                         models=modelsList,
                                         start=T1,
                                         combType=combinationType[0],
-                                        combMetric=metric)
+                                        combMetric=metric,
+                                        stepType='one')
             
-            test = ms.ModelSelector(data=newSeries,
+            test = ms.ModelSelector(data= newSeries,
                                         models=modelsList,
                                         start=T2,
                                         combType=combinationType[0],
-                                        combMetric=metric)
+                                        combMetric=metric,
+                                        stepType='one')
             
             validation.fit()
             
@@ -159,8 +164,8 @@ for metric in metrics:
             test.weights = None
             test.combinationFit()   
             test.modelsResult.append(combinationByError)
-            print(len(newSeries))
-            m1 = test.getModelByName('CF-Mean')
+            
+            '''m1 = test.getModelByName('CF-Mean')
             m2 = test.getModelByName('NAIVE')
             m3 = test.getModelByName('HOLT')
             m1_demands = m1.testPrediction
@@ -171,7 +176,7 @@ for metric in metrics:
             plt.ylabel('Demand Value')
             plt.gcf().autofmt_xdate()
             plt.savefig(imagePath+serieName+'.png',dpi = 800)
-            plt.close()
+            plt.close()'''
             
             # Add to DataFrame
             line = {}

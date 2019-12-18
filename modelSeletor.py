@@ -13,20 +13,16 @@ Note:       Implement first item level selection, include ARIMA models.
                             Croston Method (CR),
                             Combination Forecast (CF),
                             Automatic selection procedure based on RMSE (AUTO)
-Fix: 
-Status: Implementing one-step-ahead forecast.
-    a) SES, OK.
-    b) NAIVE, OK.
-    c) HOLT, OK.
-    d) CR, OK.
-    e) AR, -> Implementar forecast do AR.
-    f) CF
+                            
+Fix: incorrect forecasts for HOLT method.
+Status: Testing one-step-ahead forecast.
             
 '''
 
 import statsmodels.tsa.holtwinters as ts
 import statsmodels.tools.eval_measures as ms
 import statsmodels.tsa.ar_model as ar
+import statsmodels.tsa.filters.filtertools as ft
 import math
 import objects as obj
 import utils.util as ut
@@ -255,10 +251,21 @@ class ModelSelector:
         self.fittedModel = ar.AR(self.trainData)
         self.fittedModel = self.fittedModel.fit()
         trainingFit = pd.Series(self.fittedModel.fittedvalues)
-        testPredictions = pd.Series(self.fittedModel.predict(
-                start=len(self.trainData),
-                end=len(self.trainData)+len(self.testData)-1,
-                dynamic=False))
+        
+        
+        if self.stepType == 'multi':
+        
+            testPredictions = pd.Series(self.fittedModel.predict(
+                    start = len(self.trainData),
+                    end = len(self.trainData)+len(self.testData)-1,
+                    dynamic = False))
+        else:
+                
+            testPredictions = ModelSelector.oneStepARPrediction(
+                    self.data,
+                    self.fittedModel.params,
+                    self.start,
+                    len(self.testData))
         
         # Step 2: Training again with all data for acurate forecasts
         self.fittedModelFinal = ar.AR(self.data)
@@ -281,6 +288,24 @@ class ModelSelector:
         # Add to ModelsResult list
         self.setModelResults(modelName,errorObjs,trainingFit,
                             testPredictions,forecasts)
+    
+    @staticmethod
+    def oneStepARPrediction(timeSeries,coeff,start,steps):
+        
+        y_hat = []
+        c = coeff[0]
+        phi_vector = np.flip(coeff.values[1:])        
+        
+        for i in range(start-1,start+steps-1):
+            
+            y_hat.append(
+                    np.matmul(phi_vector,
+                              timeSeries.values[i-len(phi_vector): i])+c
+                              )
+        
+        y_hat = pd.Series(y_hat,timeSeries.index[-steps:])            
+        
+        return y_hat
         
     def fitAllModels(self):
         '''
@@ -576,3 +601,4 @@ class ModelSelector:
     @staticmethod
     def getHorizonLimit():
         return ModelSelector._horizonLimit
+    
