@@ -1,6 +1,6 @@
 # tcc_exp
 
-Experimentos realizados no trabalho de conclusão de curso na PUC-GO.
+Experimentos realizados no trabalho de conclusão de curso (Ciência da Computação) na Pontifícia Universidade Católica de Goiás.
 
 Arquivo fonte principal na pasta [Experiments](./Experiments/selection_eval.py), resultados [aqui](./Results/selection_M3_FULL.xls).
 
@@ -19,3 +19,7 @@ Resultados completos publicados no artigo da [revista Production](http://dx.doi.
 3. [pandas](https://pandas.pydata.org/) 1.1.3
 4. [numpy](https://numpy.org/) 1.19.2
 5. [matplotlib](https://matplotlib.org/) 3.1.2 
+
+Grato por todo apoio e orientação que tive durante esse período.
+
+Em caso de dúvidas, por favor envie uma mensagem para: saymongb@gmail.com.
