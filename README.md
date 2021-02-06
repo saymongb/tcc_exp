@@ -4,7 +4,7 @@ Experimentos realizados no trabalho de conclusão de curso (Ciência da Computa�
 
 Arquivo fonte principal na pasta [Experiments](./Experiments/selection_eval.py), resultados [aqui](./Results/selection_M3_FULL.xls).
 
-Ideia: Avaliar o desempenho de estratégias de combinação e seleção sendo aplicados
+Objetivo: Avaliar o desempenho de estratégias de combinação e seleção sendo aplicados
 em dados de demanda com e sem intermitência.
 
 Obseravção: o experimento pode ser reproduzido parcialmente devido à questões de confidencialidade
