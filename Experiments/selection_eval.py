@@ -46,16 +46,16 @@ def improvedScore(dataFrame,benchmark):
     return (numOfImproved/(len(dataFrame)))*100    
 
 # Data source, directory data
-dataFile = u'Demanda corrediça.xlsx'
-#dataFile = 'M3C.xls'
+#dataFile = u'Demanda corrediça.xlsx'
+dataFile = 'M3C.xls'
 path = '../Dataset/'
 imagePath = '../Images/Error/'
 resultsPath = '../Results/'
 outputFileName = None
-m3 = dataFile=='M3C.xls'
+m3 = dataFile =='M3C.xls'
 imagePath = '../Images/'
 # Experiment configuration
-metrics= ['RMSE']#,'MAPE']
+metrics= ['RMSE','MASE']#,'MAPE']
 horizon = 1
 frequency = ['M']#,'W','D']
 modelsList = ['NAIVE','SES','HOLT','AR','CR','CF1']
@@ -86,7 +86,7 @@ else:
     #data = data[data['N']>=60]
     names = data['Series'].unique()
     names.sort()
-    names = ['N2801','N1404','N1417','N1793','N1428','N1468','N1495'] # coment this line for executions
+    #names = ['N2801','N1404','N1417','N1793','N1428','N1468','N1495'] # comment this line for executions
 
 # To compute time of executions
 startTime = dt.datetime.now()
@@ -102,15 +102,14 @@ frame = pd.DataFrame(columns = cols)
 writer = pd.ExcelWriter(resultsPath+outputFileName+'.xls')
 
 for metric in metrics:
-    print(metric)
+    
     for freq in frequency:
         
         frame = pd.DataFrame(columns = cols)
         
         for serieName in names:
             
-            print()
-            print('Series:'+serieName)
+            print('\nSeries:'+serieName)
         
             if not m3:
                 # Get data
@@ -135,14 +134,14 @@ for metric in metrics:
                                         start=T1,
                                         combType=combinationType[0],
                                         combMetric=metric,
-                                        stepType='one')
+                                        stepType='multi')
             
             test = ms.ModelSelector(data= newSeries,
                                         models=modelsList,
                                         start=T2,
                                         combType=combinationType[0],
                                         combMetric=metric,
-                                        stepType='one')
+                                        stepType='multi')
             
             validation.fit()
             

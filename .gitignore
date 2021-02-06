@@ -102,3 +102,14 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+/docs/
+/ANN_Teste.py
+/appPredictions.py
+/gerarGrafico.py
+/objects.py
+/study.py
+/testeClient.py
+/testeRedeNeural.py
+/testeRedeNeuralComNormalizacao.py
+/testes.py
+/waitress_server.py
