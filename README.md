@@ -2,6 +2,8 @@
 
 Experimentos realizados no trabalho de conclusão de curso na PUC-GO.
 
+Arquivo fonte principal na pasta [Experiments](./Experiments/selection_eval.py), resultados [aqui](./Results/selection_M3_FULL.xls).
+
 Ideia: Avaliar o desempenho de estratégias de combinação e seleção sendo aplicados
 em dados de demanda com e sem intermitência.
 
